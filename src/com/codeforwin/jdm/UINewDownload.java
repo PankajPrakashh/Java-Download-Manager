@@ -7,6 +7,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -194,11 +195,32 @@ public class UINewDownload extends JFrame{
 	 * @param evt
 	 */
 	private void btnDownloadClick(ActionEvent evt) {
-		setVisible(false);
-
 		String url 		= textUrl.getText();
 		String filePath = textSaveLocation.getText();
 
+		if (filePath == null || filePath.isEmpty()) {
+			// If file path is empty ask user to select a file path
+			JOptionPane.showMessageDialog(this, "Please select a download location.", "Select download location",
+					JOptionPane.WARNING_MESSAGE);
+
+			btnBrowseClick(evt);
+			return;
+		} else {
+			// Check if the location exists
+			File file = new File(filePath);
+
+			// If file does not exists prompt user with a message to choose another file path
+			if (!file.exists()) {
+				JOptionPane.showMessageDialog(this,
+						"Invalid download location. Please choose another download location.", "Invalid save location",
+						JOptionPane.WARNING_MESSAGE);
+
+				btnBrowseClick(evt);
+				return;
+			}
+		}
+
 		uiHome.addNewDownload(url, filePath);
+		setVisible(false);
 	}
 }
